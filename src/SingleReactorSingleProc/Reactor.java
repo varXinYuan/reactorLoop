@@ -1,11 +1,8 @@
 package SingleReactorSingleProc;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.*;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -13,18 +10,39 @@ import java.util.Set;
  * 等待事件到来，分发事件处理
  */
 class Reactor implements Runnable {
+    private static Reactor instance = null;
+    private Acceptor acceptor;
+    private Handler handler;
     private Selector selector;
 
-    Reactor() throws IOException {
+    private Reactor() {
         // 创建选择器
-        selector = Selector.open();
+        try {
+            selector = Selector.open();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-        // 初始化服务端socket
-        ServerSocketChannel serverSocketChannel = initializeServer();
+    public static Reactor Instance() {
+        if (instance == null) {
+            instance = new Reactor();
+        }
 
-        // 注册选择器, 在注册过程中指出该信道可以进行Accept操作
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-        System.out.println("注册服务端连接至selector……");
+        return instance;
+    }
+
+    public Reactor initAcceptor() {
+        acceptor = Acceptor.Instance();
+        return this;
+    }
+
+    public void register(AbstractSelectableChannel socketChannel, int selectionKeyOp) {
+        try {
+            socketChannel.register(selector, selectionKeyOp);
+        } catch (ClosedChannelException e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
@@ -42,38 +60,21 @@ class Reactor implements Runnable {
                 }
             }
         } catch (IOException e) {
-            //do something
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 初始化服务端连接
-     */
-    public ServerSocketChannel initializeServer() throws IOException {
-        // 打开监听信道
-        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8888);
-        //与本地端口绑定
-        serverSocketChannel.socket().bind(address);
-        // 设置为非阻塞模式
-        serverSocketChannel.configureBlocking(false);
-        System.out.println("初始化服务端连接……");
-
-        return serverSocketChannel;
     }
 
     /**
      * 分发事件
      */
     void dispatch(SelectionKey k) {
-        // 若是连接事件获取是acceptor
-        // 若是IO读写事件获取是handler
         if (k.isAcceptable()) {
-            new Acceptor(k).run();
+            // 若是连接事件，调acceptor处理
+            acceptor.run();
         } else if (k.isReadable()) {
-            //new Handler(k).run();
-            new Thread(new Handler(k)).start();
+            // 若是IO读写事件，调handler处理
+            SocketChannel socketChannel = (SocketChannel) k.channel();
+            new Handler(socketChannel).run();
         }
     }
 }
