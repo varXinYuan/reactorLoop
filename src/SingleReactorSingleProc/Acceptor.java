@@ -48,8 +48,6 @@ class Acceptor implements Runnable {
         }
     }
 
-    private void register(AbstractSelectableChannel socketChannel, int selectionKeyOp)
-
     /**
      * 初始化服务端连接
      */
