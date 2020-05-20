@@ -1,4 +1,4 @@
-package SingleReactorSingleProc;
+package PlainReactorLoop;
 
 public class Server {
     public static void main(String[] args) {

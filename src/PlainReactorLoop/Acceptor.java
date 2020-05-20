@@ -1,11 +1,10 @@
-package SingleReactorSingleProc;
+package PlainReactorLoop;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.channels.spi.AbstractSelectableChannel;
 
 /**
  * 连接事件就绪,处理连接事件
