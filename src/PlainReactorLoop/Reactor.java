@@ -47,12 +47,12 @@ class Reactor implements Runnable {
             while (!Thread.interrupted()) {
                 // 创建选择器
                 selector.select();
-                Set selected = selector.selectedKeys();
-                Iterator it = selected.iterator();
+                Set<SelectionKey> selected = selector.selectedKeys();
+                Iterator<SelectionKey> it = selected.iterator();
                 while (it.hasNext()) {
                     System.out.println("dispatch key 1");
                     //分发事件处理
-                    dispatch((SelectionKey) (it.next()));
+                    dispatch(it.next());
                     it.remove();
                 }
             }
