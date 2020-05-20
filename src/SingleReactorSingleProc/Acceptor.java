@@ -32,6 +32,10 @@ class Acceptor implements Runnable {
         return instance;
     }
 
+    public static void init() {
+        Acceptor.Instance();
+    }
+
     @Override
     public void run() {
         try {

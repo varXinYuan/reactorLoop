@@ -11,8 +11,6 @@ import java.util.Set;
  */
 class Reactor implements Runnable {
     private static Reactor instance = null;
-    private Acceptor acceptor;
-    private Handler handler;
     private Selector selector;
 
     private Reactor() {
@@ -32,9 +30,8 @@ class Reactor implements Runnable {
         return instance;
     }
 
-    public Reactor initAcceptor() {
-        acceptor = Acceptor.Instance();
-        return this;
+    public static void init() {
+        Reactor.Instance();
     }
 
     public void register(AbstractSelectableChannel socketChannel, int selectionKeyOp) {
@@ -70,7 +67,7 @@ class Reactor implements Runnable {
     void dispatch(SelectionKey k) {
         if (k.isAcceptable()) {
             // 若是连接事件，调acceptor处理
-            acceptor.run();
+            Acceptor.Instance().run();
         } else if (k.isReadable()) {
             // 若是IO读写事件，调handler处理
             SocketChannel socketChannel = (SocketChannel) k.channel();
