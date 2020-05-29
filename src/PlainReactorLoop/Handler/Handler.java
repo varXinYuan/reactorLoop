@@ -1,4 +1,4 @@
-package PlainReactorLoop;
+package PlainReactorLoop.Handler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,12 +17,12 @@ class Handler implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("处理业务逻辑……");
         try {
+            System.out.println("处理业务逻辑……");
             String question = read();
             String resultMsg = process(question);
             write(resultMsg);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
