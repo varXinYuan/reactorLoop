@@ -15,10 +15,9 @@ class Handler implements Runnable {
         socketChannel = socket;
     }
 
-    @Override
     public void run() {
         try {
-            System.out.println("处理业务逻辑……");
+            HandlerMaster.logger.info("处理业务逻辑……");
             String question = read();
             String resultMsg = process(question);
             write(resultMsg);
@@ -38,7 +37,7 @@ class Handler implements Runnable {
         // 将字节转化为为UTF-16的字符串
         String receivedString = Charset.forName("utf-8").newDecoder().decode(buffer).toString();
         // 控制台打印
-        System.out.println("接收到来自" + socketChannel.socket().getRemoteSocketAddress() + "的信息:" + receivedString);
+        HandlerMaster.logger.info("接收到来自" + socketChannel.socket().getRemoteSocketAddress() + "的信息:" + receivedString);
 
         return receivedString;
     }
@@ -46,7 +45,7 @@ class Handler implements Runnable {
     private void write(String resultMsg) throws IOException {
         socketChannel.write(ByteBuffer.wrap(resultMsg.getBytes()));
 
-        System.out.println("回复" + socketChannel.socket().getRemoteSocketAddress() + "信息:" + resultMsg);
+        HandlerMaster.logger.info("回复" + socketChannel.socket().getRemoteSocketAddress() + "信息:" + resultMsg);
     }
 
     /**
