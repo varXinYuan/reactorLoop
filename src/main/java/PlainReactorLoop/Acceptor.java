@@ -2,6 +2,7 @@ package PlainReactorLoop;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -13,7 +14,7 @@ import java.nio.channels.SocketChannel;
  */
 class Acceptor implements Runnable {
     private ServerSocketChannel serverSocketChannel;
-    private Logger logger= LoggerFactory.getLogger(Acceptor.class);
+    private Logger logger = LoggerFactory.getLogger(Acceptor.class);
 
     Acceptor() {
         // 初始化服务端连接
@@ -41,6 +42,10 @@ class Acceptor implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void init() {
+        new Thread(new Acceptor()).start();
     }
 
     /**

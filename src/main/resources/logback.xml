@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property name="APP_NAME" value="reactor_test" />
-    <property name="LOG_NAME" value="/Users/jerry/log/${APP_NAME}/${APP_NAME}.log" />
+    <property name="LOG_NAME" value="/logs/reactor.log" />
 
-    <appender name="APP_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="APP_LOG" class="ch.qos.logback.core.rolling.ConsoleAppender">
         <!--指定日志文件名称-->
         <file>${LOG_NAME}</file>
         <encoder>
@@ -13,6 +13,12 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--日志最大保存15天-->
+            <maxHistory>15</maxHistory>
+            <!--日志最大的文件大小-->
+            <maxFileSize>100MB</maxFileSize>
+            <!--日志最大保存10GB-->
+            <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 

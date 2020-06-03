@@ -3,7 +3,6 @@ package PlainReactorLoop;
 import PlainReactorLoop.Handler.HandlerMaster;
 import PlainReactorLoop.Reactor.ReactorFacade;
 
-import java.io.IOException;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,16 +17,16 @@ public class Server {
     public static LinkedBlockingQueue<SocketChannel> handlerSocketQueue = new LinkedBlockingQueue<SocketChannel>();
 
     // 全局selector
-    public static Selector selector = null;
+    public static Selector[] selectors = new Selector[ReactorFacade.MAX_THREAD_NUM];
 
     public static void main(String[] args) {
-        // 运行Reactor Facade
-        new Thread(new ReactorFacade()).start();
+        // 运行Reactor
+        ReactorFacade.init();
 
         // 运行Acceptor
-        new Thread(new Acceptor()).start();
+        Acceptor.init();
 
         // 初始化Handler
-        new Thread(new HandlerMaster()).start();
+        HandlerMaster.init();
     }
 }

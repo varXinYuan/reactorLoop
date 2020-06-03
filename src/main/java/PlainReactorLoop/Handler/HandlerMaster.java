@@ -25,4 +25,8 @@ public class HandlerMaster implements Runnable {
             }
         }
     }
+
+    public static void init() {
+        new Thread(new HandlerMaster()).start();
+    }
 }
