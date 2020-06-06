@@ -20,8 +20,8 @@ class Reactor implements Runnable {
         try {
             while (!Thread.interrupted()) {
                 // 创建选择器
-                Server.selectors[0].select();
-                Set<SelectionKey> selected = Server.selectors[0].selectedKeys();
+                Server.selector.select();
+                Set<SelectionKey> selected = Server.selector.selectedKeys();
                 Iterator<SelectionKey> it = selected.iterator();
                 while (it.hasNext()) {
                     logger.info("dispatch key 1");

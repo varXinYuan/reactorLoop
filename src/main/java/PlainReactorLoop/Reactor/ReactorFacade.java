@@ -7,18 +7,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.Selector;
-import java.nio.channels.spi.SelectorProvider;
 
 public class ReactorFacade implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(ReactorFacade.class);
-    public static final Integer MAX_THREAD_NUM = 4;
 
     public void run() {
         // 监听并注册读socket
         try {
             while (!Thread.interrupted()) {
                 SocketInfo socketInfo = Server.reactorSocketQueue.take();
-                socketInfo.socketChannel.register(Server.selectors[0], socketInfo.socketType);
+                socketInfo.socketChannel.register(Server.selector, socketInfo.socketType);
                 logger.info("Reactor注册Socket到Selector……");
                 System.out.println("Reactor注册Socket到Selector……");
             }
@@ -30,10 +28,7 @@ public class ReactorFacade implements Runnable {
     public static void init() {
         try {
             // 初始化 selector
-            SelectorProvider selectorProvider = SelectorProvider.provider();
-            for (Integer i = 0; i < MAX_THREAD_NUM; i++) {
-                Server.selectors[i] = selectorProvider.openSelector();
-            }
+            Server.selector = Selector.open();
         } catch (IOException e) {
             e.printStackTrace();
         }

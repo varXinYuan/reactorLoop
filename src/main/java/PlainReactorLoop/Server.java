@@ -17,7 +17,7 @@ public class Server {
     public static LinkedBlockingQueue<SocketChannel> handlerSocketQueue = new LinkedBlockingQueue<SocketChannel>();
 
     // 全局selector
-    public static Selector[] selectors = new Selector[ReactorFacade.MAX_THREAD_NUM];
+    public static Selector selector = null;
 
     public static void main(String[] args) {
         // 运行Reactor
