@@ -13,8 +13,9 @@ public class ReactorFacade implements Runnable {
 
     public void run() {
         // 监听并注册读socket
+        logger.info("ReactorFacade Run");
         try {
-            while (!Thread.interrupted()) {
+            while (true) {
                 SocketInfo socketInfo = Server.reactorSocketQueue.take();
                 socketInfo.socketChannel.register(Server.selector, socketInfo.socketType);
                 logger.info("Reactor注册Socket到Selector……");

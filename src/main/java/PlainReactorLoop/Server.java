@@ -2,7 +2,6 @@ package PlainReactorLoop;
 
 import PlainReactorLoop.Handler.HandlerMaster;
 import PlainReactorLoop.Reactor.ReactorFacade;
-
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,6 +21,11 @@ public class Server {
     public static void main(String[] args) {
         // 运行Reactor
         ReactorFacade.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // 运行Acceptor
         Acceptor.init();

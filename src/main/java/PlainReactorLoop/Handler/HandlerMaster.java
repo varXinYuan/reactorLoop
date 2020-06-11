@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 
 public class HandlerMaster implements Runnable {
     //private static final ExecutorService executor = Executors.newFixedThreadPool(1);
-    public static final Logger logger = LoggerFactory.getLogger(HandlerMaster.class);
+    private static final Logger logger = LoggerFactory.getLogger(HandlerMaster.class);
 
     public void run() {
         while (!Thread.interrupted()) {

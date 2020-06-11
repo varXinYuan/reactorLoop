@@ -1,5 +1,8 @@
 package PlainReactorLoop.Handler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -10,6 +13,7 @@ import java.nio.charset.Charset;
  */
 class Handler implements Runnable {
     private SocketChannel socketChannel;
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     Handler(SocketChannel socket) {
         socketChannel = socket;
@@ -17,7 +21,7 @@ class Handler implements Runnable {
 
     public void run() {
         try {
-            HandlerMaster.logger.info("处理业务逻辑……");
+            logger.info("处理业务逻辑……");
             String question = read();
             String resultMsg = process(question);
             write(resultMsg);
@@ -37,7 +41,7 @@ class Handler implements Runnable {
         // 将字节转化为为UTF-16的字符串
         String receivedString = Charset.forName("utf-8").newDecoder().decode(buffer).toString();
         // 控制台打印
-        HandlerMaster.logger.info("接收到来自" + socketChannel.socket().getRemoteSocketAddress() + "的信息:" + receivedString);
+        logger.info("接收到来自" + socketChannel.socket().getRemoteSocketAddress() + "的信息:" + receivedString);
 
         return receivedString;
     }
@@ -45,7 +49,7 @@ class Handler implements Runnable {
     private void write(String resultMsg) throws IOException {
         socketChannel.write(ByteBuffer.wrap(resultMsg.getBytes()));
 
-        HandlerMaster.logger.info("回复" + socketChannel.socket().getRemoteSocketAddress() + "信息:" + resultMsg);
+        logger.info("回复" + socketChannel.socket().getRemoteSocketAddress() + "信息:" + resultMsg);
     }
 
     /**

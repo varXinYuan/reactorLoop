@@ -16,8 +16,8 @@ class Reactor implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(Reactor.class);
 
     public void run() {
-        logger.info("aaaaaa");
         try {
+            logger.info("Reactor Run");
             while (!Thread.interrupted()) {
                 // 创建选择器
                 Server.selector.select();
