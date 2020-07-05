@@ -2,6 +2,7 @@ package PlainReactorLoop;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.channels.*;
 import java.util.Iterator;
@@ -17,7 +18,6 @@ class Reactor implements Runnable {
         try {
             // 初始化 selector
             Server.selector = Selector.open();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -29,15 +29,14 @@ class Reactor implements Runnable {
 
     public void run() {
         try {
-            logger.info("Reactor Run");
+            logger.info("Reactor 运行中……");
             while (!Thread.interrupted()) {
                 // 创建选择器
                 Server.selector.select();
+                logger.info("Reactor 处理IO事件……");
                 Set<SelectionKey> selected = Server.selector.selectedKeys();
                 Iterator<SelectionKey> it = selected.iterator();
                 while (it.hasNext()) {
-                    logger.info("dispatch key 1");
-                    //分发事件处理
                     dispatch(it.next());
                     it.remove();
                 }
@@ -48,7 +47,7 @@ class Reactor implements Runnable {
     }
 
     /**
-     * 分发事件
+     * 分发事件处理
      */
     void dispatch(SelectionKey k) {
         if (k.isReadable()) {
