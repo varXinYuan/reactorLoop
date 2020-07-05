@@ -1,9 +1,7 @@
-package PlainReactorLoop.Reactor;
+package PlainReactorLoop;
 
-import PlainReactorLoop.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.channels.*;
 import java.util.Iterator;
@@ -14,6 +12,20 @@ import java.util.Set;
  */
 class Reactor implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(Reactor.class);
+
+    Reactor() {
+        try {
+            // 初始化 selector
+            Server.selector = Selector.open();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void start() {
+        new Thread(new Reactor()).start();
+    }
 
     public void run() {
         try {
@@ -39,23 +51,11 @@ class Reactor implements Runnable {
      * 分发事件
      */
     void dispatch(SelectionKey k) {
-        if (k.isAcceptable()) {
-            // 若是连接事件，调acceptor处理
-            logger.info("连接事件，通知Acceptor");
-            notifyAcceptor();
-        } else if (k.isReadable()) {
+        if (k.isReadable()) {
             // 若是IO读写事件，调handler处理
+            logger.info("IO读写事件，处理Socket……");
             SocketChannel socketChannel = (SocketChannel) k.channel();
-            logger.info("IO读写事件，通知HandlerMaster");
-            notifyHandler(socketChannel);
+            new Handler(socketChannel).run();
         }
-    }
-
-    private void notifyHandler(SocketChannel socketChannel) {
-        Server.handlerSocketQueue.add(socketChannel);
-    }
-
-    private void notifyAcceptor() {
-        Server.acceptSockets.add(1);
     }
 }

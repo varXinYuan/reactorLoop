@@ -1,4 +1,4 @@
-package PlainReactorLoop.Handler;
+package PlainReactorLoop;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ class Handler implements Runnable {
     private SocketChannel socketChannel;
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
-    Handler(SocketChannel socket) {
+    public Handler(SocketChannel socket) {
         socketChannel = socket;
     }
 
