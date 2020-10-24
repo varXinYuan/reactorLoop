@@ -1,18 +1,20 @@
 package PlainReactorLoop;
 
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class Server {
-    // 全局selector
-    public static Selector selector = null;
+    // 读取配置内的进程数
+    public static Integer processNum = 4;
+
+    // 全局selector初始化
+    public static Selector[] selector = new Selector[Server.processNum];
 
     public static void main(String[] args) {
         // 运行Reactor
-        Reactor.start();
+        Reactor.start(Server.processNum);
 
+        // 运行Acceptor
         Acceptor.start();
     }
 }

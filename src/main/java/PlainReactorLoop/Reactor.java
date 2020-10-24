@@ -13,28 +13,33 @@ import java.util.Set;
  */
 class Reactor implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(Reactor.class);
+    private Integer selectorIndex;
 
-    Reactor() {
+    Reactor(Integer selectorIndex) {
+        this.selectorIndex = selectorIndex;
+
         try {
             // 初始化 selector
-            Server.selector = Selector.open();
+            Server.selector[selectorIndex] = Selector.open();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void start() {
-        new Thread(new Reactor()).start();
+    public static void start(Integer processNum) {
+        for (Integer selectorIndex = 0; selectorIndex < processNum; selectorIndex++) {
+            new Thread(new Reactor(selectorIndex)).start();
+        }
     }
 
     public void run() {
         try {
-            logger.info("Reactor 运行中……");
+            logger.info("Reactor" + this.selectorIndex + " 运行中……");
             while (!Thread.interrupted()) {
                 // 创建选择器
-                Server.selector.select();
-                logger.info("Reactor 处理IO事件……");
-                Set<SelectionKey> selected = Server.selector.selectedKeys();
+                Server.selector[selectorIndex].select();
+                logger.info("Reactor" + this.selectorIndex + " 处理IO事件……");
+                Set<SelectionKey> selected = Server.selector[selectorIndex].selectedKeys();
                 Iterator<SelectionKey> it = selected.iterator();
                 while (it.hasNext()) {
                     dispatch(it.next());
@@ -52,7 +57,7 @@ class Reactor implements Runnable {
     void dispatch(SelectionKey k) {
         if (k.isReadable()) {
             // 若是IO读写事件，调handler处理
-            logger.info("IO读写事件，处理Socket……");
+            logger.info("Reactor" + this.selectorIndex + " IO读写事件分发……");
             SocketChannel socketChannel = (SocketChannel) k.channel();
             new Handler(socketChannel).run();
         }

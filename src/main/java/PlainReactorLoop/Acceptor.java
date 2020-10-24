@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.*;
+import java.util.Random;
 
 /**
  * 连接事件就绪,处理连接事件
@@ -65,9 +66,10 @@ class Acceptor implements Runnable {
         try {
             socketChannel.configureBlocking(false);
             // 唤起selector以防锁未释放
-            Server.selector.wakeup();
-            socketChannel.register(Server.selector, SelectionKey.OP_READ);
-            logger.info("Acceptor注册Socket到Reactor Selector……");
+            int selectorIndex = new Random().nextInt(Server.processNum);
+            Server.selector[selectorIndex].wakeup();
+            socketChannel.register(Server.selector[selectorIndex], SelectionKey.OP_READ);
+            logger.info("Acceptor注册Socket到Reactor Selector" + selectorIndex + "……");
         } catch (IOException e) {
             e.printStackTrace();
         }
