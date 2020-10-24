@@ -56,8 +56,6 @@ class Handler implements Runnable {
      * task 业务处理
      */
     public String process(String question) {
-        String res = question.replace("?", ".");
-        return res;
+        return question.replace("?", ".");
     }
 }
-
